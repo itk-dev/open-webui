@@ -100,7 +100,7 @@ async def get_session_user(
     )
 
     user_permissions = get_permissions(
-        user.id, Permissions.get_permissions_by_category()
+        user.id, Permissions.get_by_category()
     )
 
     return {
@@ -304,7 +304,7 @@ async def ldap_auth(request: Request, response: Response, form_data: LdapForm):
                 )
 
                 user_permissions = get_permissions(
-                    user.id, Permissions.get_permissions_by_category()
+                    user.id, Permissions.get_by_category()
                 )
 
                 return {
@@ -401,7 +401,7 @@ async def signin(request: Request, response: Response, form_data: SigninForm):
         )
 
         user_permissions = get_permissions(
-            user.id, Permissions.get_permissions_by_category()
+            user.id, Permissions.get_by_category()
         )
 
         return {
@@ -515,7 +515,7 @@ async def signup(request: Request, response: Response, form_data: SignupForm):
                 )
 
             user_permissions = get_permissions(
-                user.id, Permissions.get_permissions_by_category()
+                user.id, Permissions.get_by_category()
             )
 
             return {
