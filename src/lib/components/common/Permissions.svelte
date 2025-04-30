@@ -4,6 +4,8 @@
 
 	import Switch from '$lib/components/common/Switch.svelte';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
+	import PlusIcon from "$lib/components/icons/Plus.svelte";
+	import Modal from "$lib/components/common/Modal.svelte";
 
 	// Default values for permissions (fallback)
 	const defaultPermissions = {
@@ -39,7 +41,10 @@
 		}
 	};
 
+	let showAddPermissionModal = [false, false, false, false];
+
 	export let permissions = {};
+	export let allowNewPermissions = false
 
 	// Reactive statement to ensure all fields are present in `permissions`
 	$: {
@@ -75,12 +80,39 @@
 </script>
 
 <div>
+	<!-- Move this into modal, multi level modal don't work currently-->
 	{#each Object.entries(permissions) as [categoryName, category], index}
+		{#if showAddPermissionModal[index]}
+			<Modal bind:show={showAddPermissionModal} class="flex flex-col w-full mt-1">
+				<div class=" mb-1 text-xs text-gray-500">{$i18n.t('Name')}</div>
+
+				<div class="flex-1">
+					<input
+						class="w-full text-sm bg-transparent disabled:text-gray-500 dark:disabled:text-gray-500 outline-hidden"
+						type="text"
+						placeholder={$i18n.t('Role name, should be lower case and without spaces')}
+						autocomplete="off"
+						required
+					/>
+				</div>
+			</Modal>
+		{/if}
 		{#if index !== 0}
 			<hr class=" border-gray-100 dark:border-gray-850 my-2" />
 		{/if}
 		<div>
-			<div class=" mb-2 text-sm font-medium">{$i18n.t(formatPermissionCategory(categoryName))}</div>
+			<div class=" mb-2 text-sm font-medium" on:mousedown|stopPropagation on:click|stopPropagation>
+				{$i18n.t(formatPermissionCategory(categoryName))}
+				{#if allowNewPermissions}
+					<button	on:click={() => {
+						showAddPermissionModal[index] = !showAddPermissionModal[index];
+					}}>
+						<Tooltip content={$i18n.t('Add New Permission')}>
+							<PlusIcon className="ml-1 w-4 h-4 inline-block"/>
+						</Tooltip>
+					</button>
+				{/if}
+			</div>
 
 			{#each Object.entries(category) as [key, value]}
 				<div class="flex w-full justify-between my-2 pr-2">

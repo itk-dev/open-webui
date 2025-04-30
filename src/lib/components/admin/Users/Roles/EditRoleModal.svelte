@@ -166,7 +166,7 @@
 									</div>
 								</div>
 							{:else if selectedTab === 'permissions'}
-								<Permissions bind:permissions/>
+								<Permissions bind:permissions allowNewPermissions={true}/>
 							{/if}
 						</div>
 					</div>
