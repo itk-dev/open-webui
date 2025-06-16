@@ -159,6 +159,7 @@
 						</DropdownMenu.Item>
 					</Tooltip>
 
+                    {#if $user?.role === 'admin' || $user?.permissions.chat?.image_capture}
 					<Tooltip
 						content={fileUploadCapableModels.length !== selectedModels.length
 							? $i18n.t('Model(s) do not support file upload')
@@ -189,6 +190,7 @@
 							<div class=" line-clamp-1">{$i18n.t('Capture')}</div>
 						</DropdownMenu.Item>
 					</Tooltip>
+                    {/if}
 
 					<Tooltip
 						content={fileUploadCapableModels.length !== selectedModels.length
@@ -244,6 +246,7 @@
 					{/if}
 
 					{#if ($knowledge ?? []).length > 0}
+                        {#if $user?.role === 'admin' || $user?.permissions.chat?.attach_knowledge}
 						<Tooltip
 							content={fileUploadCapableModels.length !== selectedModels.length
 								? $i18n.t('Model(s) do not support file upload')
@@ -273,6 +276,7 @@
 								</div>
 							</button>
 						</Tooltip>
+                        {/if}
 					{/if}
 
 					{#if ($chats ?? []).length > 0}
