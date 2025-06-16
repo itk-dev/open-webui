@@ -50,6 +50,7 @@
 			controls: true,
 			valves: true,
 			system_prompt: true,
+			image_capture: true,
 			params: true,
 			file_upload: true,
 			delete: true,
