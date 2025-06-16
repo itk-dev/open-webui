@@ -163,6 +163,7 @@ class ChatPermissions(BaseModel):
     controls: bool = True
     valves: bool = True
     system_prompt: bool = True
+    image_capture: bool = True
     params: bool = True
     file_upload: bool = True
     delete: bool = True
