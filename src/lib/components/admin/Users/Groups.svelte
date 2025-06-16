@@ -65,7 +65,6 @@
 		},
 		chat: {
 			controls: true,
-			advanced_controls: true,
 			file_upload: true,
 			delete: true,
 			edit: true,
