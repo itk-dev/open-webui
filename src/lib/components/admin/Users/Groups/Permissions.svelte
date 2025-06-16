@@ -24,6 +24,8 @@
 			valves: true,
 			system_prompt: true,
 			params: true,
+			image_capture: true,
+            attach_knowledge: true,
 			file_upload: true,
 			delete: true,
 			delete_message: true,
@@ -302,6 +304,22 @@
 			</div>
 
 			<Switch bind:state={permissions.chat.edit} />
+		</div>
+
+		<div class="  flex w-full justify-between my-2 pr-2">
+			<div class=" self-center text-xs font-medium">
+				{$i18n.t('Allow Image capture')}
+			</div>
+
+			<Switch bind:state={permissions.chat.image_capture} />
+		</div>
+
+        <div class="  flex w-full justify-between my-2 pr-2">
+			<div class=" self-center text-xs font-medium">
+				{$i18n.t('Allow Attach Knowledge')}
+			</div>
+
+			<Switch bind:state={permissions.chat.attach_knowledge} />
 		</div>
 
 		<div class="  flex w-full justify-between my-2 pr-2">
