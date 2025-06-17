@@ -15,6 +15,7 @@ import aiohttp
 import aiofiles
 import requests
 import mimetypes
+from urllib.parse import quote
 
 from fastapi import (
     Depends,
@@ -256,6 +257,8 @@ async def update_audio_config(
         request.app.state.faster_whisper_model = set_faster_whisper_model(
             form_data.stt.WHISPER_MODEL, WHISPER_MODEL_AUTO_UPDATE
         )
+    else:
+        request.app.state.faster_whisper_model = None
 
     return {
         "tts": {
@@ -341,10 +344,10 @@ async def speech(request: Request, user=Depends(get_verified_user)):
                         "Authorization": f"Bearer {request.app.state.config.TTS_OPENAI_API_KEY}",
                         **(
                             {
-                                "X-OpenWebUI-User-Name": user.name,
-                                "X-OpenWebUI-User-Id": user.id,
-                                "X-OpenWebUI-User-Email": user.email,
-                                "X-OpenWebUI-User-Role": user.role,
+                                "X-OpenWebUI-User-Name": quote(user.name),
+                                "X-OpenWebUI-User-Id": quote(user.id),
+                                "X-OpenWebUI-User-Email": quote(user.email),
+                                "X-OpenWebUI-User-Role": quote(user.role),
                             }
                             if ENABLE_FORWARD_USER_INFO_HEADERS
                             else {}
