@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 from typing import Optional
 
+from urllib.parse import quote
 import requests
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile
 from open_webui.config import CACHE_DIR
@@ -420,7 +421,7 @@ def load_b64_image_data(b64_str):
     try:
         if "," in b64_str:
             header, encoded = b64_str.split(",", 1)
-            mime_type = header.split(";")[0]
+            mime_type = header.split(";")[0].lstrip("data:")
             img_data = base64.b64decode(encoded)
         else:
             mime_type = "image/png"
@@ -428,7 +429,7 @@ def load_b64_image_data(b64_str):
         return img_data, mime_type
     except Exception as e:
         log.exception(f"Error loading image data: {e}")
-        return None
+        return None, None
 
 
 def load_url_image_data(url, headers=None):
@@ -483,10 +484,10 @@ async def image_generations(
             headers["Content-Type"] = "application/json"
 
             if ENABLE_FORWARD_USER_INFO_HEADERS:
-                headers["X-OpenWebUI-User-Name"] = user.name
-                headers["X-OpenWebUI-User-Id"] = user.id
-                headers["X-OpenWebUI-User-Email"] = user.email
-                headers["X-OpenWebUI-User-Role"] = user.role
+                headers["X-OpenWebUI-User-Name"] = quote(user.name)
+                headers["X-OpenWebUI-User-Id"] = quote(user.id)
+                headers["X-OpenWebUI-User-Email"] = quote(user.email)
+                headers["X-OpenWebUI-User-Role"] = quote(user.role)
 
             data = {
                 "model": (

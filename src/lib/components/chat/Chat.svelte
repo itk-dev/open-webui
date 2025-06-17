@@ -302,6 +302,12 @@
 					message.content = data.content;
 				} else if (type === 'chat:message:files' || type === 'files') {
 					message.files = data.files;
+				} else if (type === 'chat:message:follow_ups') {
+					message.followUps = data.follow_ups;
+
+					if (autoScroll) {
+						scrollToBottom('smooth');
+					}
 				} else if (type === 'chat:title') {
 					chatTitle.set(data);
 					currentChatPage.set(1);
@@ -428,6 +434,7 @@
 		}
 	};
 
+	let pageSubscribe = null;
 	onMount(async () => {
 		let selectedModels = sessionStorage.selectedModels;
 
@@ -446,18 +453,13 @@
 		console.log('mounted');
 		window.addEventListener('message', onMessageHandler);
 		$socket?.on('chat-events', chatEventHandler);
-		if (!$chatId) {
-			chatIdUnsubscriber = chatId.subscribe(async (value) => {
-				if (!value) {
-					await tick(); // Wait for DOM updates
-					await initNewChat();
-				}
-			});
-		} else {
-			if ($temporaryChatEnabled) {
-				await goto('/');
+
+		pageSubscribe = page.subscribe(async (p) => {
+			if (p.url.pathname === '/') {
+				await tick();
+				initNewChat();
 			}
-		}
+		});
 
 		if (localStorage.getItem(`chat-input${chatIdProp ? `-${chatIdProp}` : ''}`)) {
 			prompt = '';
@@ -517,6 +519,7 @@
 	});
 
 	onDestroy(() => {
+		pageSubscribe();
 		chatIdUnsubscriber?.();
 		window.removeEventListener('message', onMessageHandler);
 		$socket?.off('chat-events', chatEventHandler);
@@ -790,6 +793,7 @@
 
 		autoScroll = true;
 
+		resetInput();
 		await chatId.set('');
 		await chatTitle.set('');
 
@@ -806,12 +810,21 @@
 				`https://www.youtube.com/watch?v=${$page.url.searchParams.get('youtube')}`
 			);
 		}
+
+		if ($page.url.searchParams.get('load-url')) {
+			await uploadWeb($page.url.searchParams.get('load-url'));
+		}
+
 		if ($page.url.searchParams.get('web-search') === 'true') {
 			webSearchEnabled = true;
 		}
 
 		if ($page.url.searchParams.get('image-generation') === 'true') {
 			imageGenerationEnabled = true;
+		}
+
+		if ($page.url.searchParams.get('code-interpreter') === 'true') {
+			codeInterpreterEnabled = true;
 		}
 
 		if ($page.url.searchParams.get('tools')) {
@@ -860,6 +873,11 @@
 
 	const loadChat = async () => {
 		chatId.set(chatIdProp);
+
+		if ($temporaryChatEnabled) {
+			temporaryChatEnabled.set(false);
+		}
+
 		chat = await getChatById(localStorage.token, $chatId).catch(async (error) => {
 			await goto('/');
 			return null;
@@ -879,6 +897,11 @@
 					(chatContent?.models ?? undefined) !== undefined
 						? chatContent.models
 						: [chatContent.models ?? ''];
+
+				if (!($user?.role === 'admin' || ($user?.permissions?.chat?.multiple_models ?? true))) {
+					selectedModels = selectedModels.length > 0 ? [selectedModels[0]] : [''];
+				}
+
 				oldSelectedModelIds = selectedModels;
 
 				history =
@@ -927,10 +950,13 @@
 		}
 	};
 
-	const scrollToBottom = async () => {
+	const scrollToBottom = async (behavior = 'auto') => {
 		await tick();
 		if (messagesContainerElement) {
-			messagesContainerElement.scrollTop = messagesContainerElement.scrollHeight;
+			messagesContainerElement.scrollTo({
+				top: messagesContainerElement.scrollHeight,
+				behavior
+			});
 		}
 	};
 	const chatCompletedHandler = async (chatId, modelId, responseMessageId, messages) => {
@@ -1640,9 +1666,6 @@
 				params: {
 					...$settings?.params,
 					...params,
-
-					format: $settings.requestFormat ?? undefined,
-					keep_alive: $settings.keepAlive ?? undefined,
 					stop:
 						(params?.stop ?? $settings?.params?.stop ?? undefined)
 							? (params?.stop.split(',').map((token) => token.trim()) ?? $settings.params.stop).map(
@@ -1692,19 +1715,20 @@
 				chat_id: $chatId,
 				id: responseMessageId,
 
-				...(!$temporaryChatEnabled &&
-				(messages.length == 1 ||
-					(messages.length == 2 &&
-						messages.at(0)?.role === 'system' &&
-						messages.at(1)?.role === 'user')) &&
-				(selectedModels[0] === model.id || atSelectedModel !== undefined)
-					? {
-							background_tasks: {
+				background_tasks: {
+					...(!$temporaryChatEnabled &&
+					(messages.length == 1 ||
+						(messages.length == 2 &&
+							messages.at(0)?.role === 'system' &&
+							messages.at(1)?.role === 'user')) &&
+					(selectedModels[0] === model.id || atSelectedModel !== undefined)
+						? {
 								title_generation: $settings?.title?.auto ?? true,
 								tags_generation: $settings?.autoTags ?? true
 							}
-						}
-					: {}),
+						: {}),
+					follow_up_generation: $settings?.autoFollowUps ?? true
+				},
 
 				...(stream && (model.info?.meta?.capabilities?.usage ?? false)
 					? {
@@ -1725,6 +1749,7 @@
 
 			history.messages[responseMessageId] = responseMessage;
 			history.currentId = responseMessageId;
+
 			return null;
 		});
 
@@ -1821,7 +1846,8 @@
 			childrenIds: [],
 			role: 'user',
 			content: userPrompt,
-			models: selectedModels
+			models: selectedModels,
+			timestamp: Math.floor(Date.now() / 1000) // Unix epoch
 		};
 
 		if (parentId !== null) {
@@ -2088,15 +2114,15 @@
 								</div>
 							</div>
 
-							{#if selectedModelDescription ?? null}
-								<div
-									class="mt-0.5 px-2.5 py-2.5 text-sm font-normal text-gray-500 dark:text-gray-400 line-clamp-2 max-w-xl markdown"
-								>
-									{@html marked.parse(sanitizeResponseContent(selectedModelDescription))}
-								</div>
-							{/if}
+							<div class=" pb-2">
+                {#if selectedModelDescription ?? null}
+                  <div
+                    class="mt-0.5 px-2.5 py-2.5 text-sm font-normal text-gray-500 dark:text-gray-400 line-clamp-2 max-w-xl markdown"
+                  >
+                    {@html marked.parse(sanitizeResponseContent(selectedModelDescription))}
+                  </div>
+                {/if}
 
-							<div class=" pb-[1rem]">
 								<MessageInput
 									{history}
 									{taskIds}
@@ -2115,13 +2141,15 @@
 									{stopResponse}
 									{createMessagePair}
 									onChange={(input) => {
-										if (input.prompt !== null) {
-											localStorage.setItem(
-												`chat-input${$chatId ? `-${$chatId}` : ''}`,
-												JSON.stringify(input)
-											);
-										} else {
-											localStorage.removeItem(`chat-input${$chatId ? `-${$chatId}` : ''}`);
+										if (!$temporaryChatEnabled) {
+											if (input.prompt !== null) {
+												localStorage.setItem(
+													`chat-input${$chatId ? `-${$chatId}` : ''}`,
+													JSON.stringify(input)
+												);
+											} else {
+												localStorage.removeItem(`chat-input${$chatId ? `-${$chatId}` : ''}`);
+											}
 										}
 									}}
 									on:upload={async (e) => {

@@ -32,8 +32,36 @@
 	$: {
 		const pathParts = $page.url.pathname.split('/');
 		const tabFromPath = pathParts[pathParts.length - 1];
-		selectedTab = ['general', 'connections', 'models', 'evaluations', 'tools', 'documents', 'web', 'code-execution', 'interface', 'audio', 'images', 'pipelines', 'db'].includes(tabFromPath) ? tabFromPath : 'general';
+		selectedTab = [
+			'general',
+			'connections',
+			'models',
+			'evaluations',
+			'tools',
+			'documents',
+			'web',
+			'code-execution',
+			'interface',
+			'audio',
+			'images',
+			'pipelines',
+			'db'
+		].includes(tabFromPath)
+			? tabFromPath
+			: 'general';
 	}
+
+	$: if (selectedTab) {
+		// scroll to selectedTab
+		scrollToTab(selectedTab);
+	}
+
+	const scrollToTab = (tabId) => {
+		const tabElement = document.getElementById(tabId);
+		if (tabElement) {
+			tabElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+		}
+	};
 
 	onMount(() => {
 		const containerElement = document.getElementById('admin-settings-tabs-container');
@@ -46,6 +74,9 @@
 				}
 			});
 		}
+
+		// Scroll to the selected tab on mount
+		scrollToTab(selectedTab);
 	});
 </script>
 
@@ -55,6 +86,7 @@
 		class="tabs flex flex-row overflow-x-auto gap-2.5 max-w-full lg:gap-1 lg:flex-col lg:flex-none lg:w-40 dark:text-gray-200 text-sm font-medium text-left scrollbar-none"
 	>
 		<button
+			id="general"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 lg:flex-none flex text-right transition {selectedTab ===
 			'general'
 				? ''
@@ -81,6 +113,7 @@
 		</button>
 
 		<button
+			id="connections"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'connections'
 				? ''
@@ -105,6 +138,7 @@
 		</button>
 
 		<button
+			id="models"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'models'
 				? ''
@@ -131,6 +165,7 @@
 		</button>
 
 		<button
+			id="evaluations"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'evaluations'
 				? ''
@@ -146,6 +181,7 @@
 		</button>
 
 		<button
+			id="tools"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'tools'
 				? ''
@@ -172,6 +208,7 @@
 		</button>
 
 		<button
+			id="documents"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'documents'
 				? ''
@@ -202,6 +239,7 @@
 		</button>
 
 		<button
+			id="web"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'web'
 				? ''
@@ -226,6 +264,7 @@
 		</button>
 
 		<button
+			id="code-execution"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'code-execution'
 				? ''
@@ -252,6 +291,7 @@
 		</button>
 
 		<button
+			id="interface"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'interface'
 				? ''
@@ -278,6 +318,7 @@
 		</button>
 
 		<button
+			id="audio"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'audio'
 				? ''
@@ -305,6 +346,7 @@
 		</button>
 
 		<button
+			id="images"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'images'
 				? ''
@@ -331,6 +373,7 @@
 		</button>
 
 		<button
+			id="pipelines"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'pipelines'
 				? ''
@@ -361,6 +404,7 @@
 		</button>
 
 		<button
+			id="db"
 			class="px-0.5 py-1 min-w-fit rounded-lg flex-1 md:flex-none flex text-left transition {selectedTab ===
 			'db'
 				? ''
