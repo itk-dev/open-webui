@@ -17,6 +17,10 @@
 	import { stringify } from 'postcss';
 	import { toast } from 'svelte-sonner';
 
+	// PATCH IMPORT
+	import PatchSelectIcon from '$lib/components/workspace/Models/SelectIcon/PatchSelectIcon.svelte';
+	// PATCH IMPORT END
+
 	const i18n = getContext('i18n');
 
 	export let onSubmit: Function;
@@ -373,7 +377,9 @@
 					submitHandler();
 				}}
 			>
-				<div class="self-center md:self-start flex justify-center my-2 shrink-0">
+
+				<!-- PATCH REMOVE IMAGE UPLOAD -->
+				<!-- <div class="self-center md:self-start flex justify-center my-2 shrink-0">
 					<div class="self-center">
 						<button
 							class="rounded-xl flex shrink-0 items-center {info.meta.profile_image_url !==
@@ -437,7 +443,8 @@
 							>
 						</div>
 					</div>
-				</div>
+				</div> -->
+				<!-- / PATCH REMOVE IMAGE UPLOAD -->
 
 				<div class="w-full">
 					<div class="mt-2 my-2 flex flex-col">
@@ -517,6 +524,15 @@
 							/>
 						{/if}
 					</div>
+
+					<!-- PATCH COMPONENT TAG  -->
+					<!-- The function defined inline to make patching process smoother -->
+					<PatchSelectIcon
+						setProfileImageUrl={(profileImageUrl) => {
+							info.meta.profile_image_url = profileImageUrl;
+						}}
+					/>
+					<!-- END PATCH COMPONENT TAG  -->
 
 					<div class=" mt-2 my-1">
 						<div class="">
