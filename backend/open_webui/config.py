@@ -1043,6 +1043,7 @@ ENABLE_SIGNUP = PersistentConfig(
     ),
 )
 
+
 # PATCH REDIRECT TO WAS
 WAS_REDIRECT_URL = PersistentConfig(
     "WAS_REDIRECT_URL",
@@ -1050,6 +1051,7 @@ WAS_REDIRECT_URL = PersistentConfig(
     os.environ.get("WAS_REDIRECT_URL", ""),
 )
 # /PATCH REDIRECT TO WAS
+
 
 ENABLE_LOGIN_FORM = PersistentConfig(
     "ENABLE_LOGIN_FORM",
