@@ -1043,6 +1043,23 @@ ENABLE_SIGNUP = PersistentConfig(
     ),
 )
 
+
+# PATCH EXTRA LOGIN INFO
+SYSTEM_REGISTER_URL = PersistentConfig(
+    "SYSTEM_REGISTER_URL",
+    "ui.SYSTEM_REGISTER_URL",
+    os.environ.get("SYSTEM_REGISTER_URL", ""),
+)
+
+
+SYSTEM_REGISTER_GUIDE_URL = PersistentConfig(
+    "SYSTEM_REGISTER_GUIDE_URL",
+    "ui.SYSTEM_REGISTER_GUIDE_URL",
+    os.environ.get("SYSTEM_REGISTER_GUIDE_URL", ""),
+)
+# /PATCH EXTRA LOGIN INFO
+
+
 ENABLE_LOGIN_FORM = PersistentConfig(
     "ENABLE_LOGIN_FORM",
     "ui.ENABLE_LOGIN_FORM",
