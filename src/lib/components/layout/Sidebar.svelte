@@ -442,25 +442,6 @@
 
 		await tick();
 	};
-
-	// PATCH ADD LOGO TO SIDEBAR
-	function IsJson(str) {
-		try {
-			JSON.parse(str);
-		} catch (e) {
-			return false;
-		}
-		return true;
-	}
-
-	function getUrl(str) {
-		if (IsJson(str)) {
-			return JSON.parse(str);
-		} else {
-			return str;
-		}
-	}
-	// /PATCH ADD LOGO TO SIDEBAR
 </script>
 
 <ArchivedChatsModal
@@ -1170,9 +1151,7 @@
 			>
 				<div class="self-center mr-3">
 					<img
-						src={$config?.extended_features?.logo_url
-							? getUrl($config?.extended_features?.logo_url)
-							: ''}
+						src={$config?.extended_features?.logo_url}
 						class="max-w-[150px] object-cover"
 						alt=""
 					/>

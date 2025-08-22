@@ -166,24 +166,6 @@
 		}
 	});
 
-	// PATCH EXTRA LOGIN INFO
-	function IsJson(str) {
-		try {
-			JSON.parse(str);
-		} catch (e) {
-			return false;
-		}
-		return true;
-	}
-
-	function getUrl(str) {
-		if (IsJson(str)) {
-			return JSON.parse(str);
-		} else {
-			return str;
-		}
-	}
-	// /PATCH EXTRA LOGIN INFO
 </script>
 
 <svelte:head>
@@ -414,7 +396,7 @@
 										id: '1',
 										dismissible: false,
 										title: 'Vigtigt før du logger ind første gang!',
-										content: `<div>Du skal have adgang til AI-Platform i Aarhus Kommunes Systemregister.</div><div><a target="_blank" rel="noopener noreferrer" class='underline' href='${getUrl($config?.extended_features?.system_register_url)}'>Anmod om adgang i systemregistret</a></div>.</div><div>Du kan <a target="_blank" rel="noopener noreferrer" class='underline' href='${getUrl($config?.extended_features?.system_register_guide_url)}'>hente en vejledning til hvordan man anmoder om adgang til systemregistret</a></div>`
+										content: `<div>Du skal have adgang til AI-Platform i Aarhus Kommunes Systemregister.</div><div><a target="_blank" rel="noopener noreferrer" class='underline' href='${$config?.extended_features?.system_register_url}'>Anmod om adgang i systemregistret</a></div>.</div><div>Du kan <a target="_blank" rel="noopener noreferrer" class='underline' href='${$config?.extended_features?.system_register_guide_url}'>hente en vejledning til hvordan man anmoder om adgang til systemregistret</a></div>`
 									}}
 								></Banner>
 							{/if}
