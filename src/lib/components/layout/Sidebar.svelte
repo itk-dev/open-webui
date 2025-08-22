@@ -1186,9 +1186,7 @@
 			>
 				<div class="self-center mr-3">
 					<img
-						src={$config?.extended_features?.logo_url
-							? getUrl($config?.extended_features?.logo_url)
-							: ''}
+						src={$config?.extended_features?.logo_url}
 						class="max-w-[150px] object-cover"
 						alt=""
 					/>
