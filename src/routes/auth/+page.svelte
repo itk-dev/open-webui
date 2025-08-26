@@ -403,7 +403,6 @@
 											<div class="mb-2">
 												<a
 													target="_blank"
-													rel="noopener noreferrer"
 													class="underline"
 													href="${$config?.extended_features?.system_register_url}"
 													>Anmod om adgang i Systemregisteret.</a
@@ -412,7 +411,6 @@
 											<div class="mb-2">
 												<a
 													target="_blank"
-													rel="noopener noreferrer"
 													class="underline"
 													href="${$config?.extended_features?.system_register_guide_url}"
 													>Vejledning til at anmode om adgang i Systemregisteret på Serviceportalen.</a
