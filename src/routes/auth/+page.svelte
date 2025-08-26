@@ -408,7 +408,7 @@
 												<a
 													target="_blank"
 													class="underline"
-													href="${$config?.extended_features?.system_register_url}"
+													href="{$config?.extended_features?.system_register_url}"
 													>Anmod om adgang i Systemregisteret.</a
 												>
 											</div>
@@ -416,7 +416,7 @@
 												<a
 													target="_blank"
 													class="underline"
-													href="${$config?.extended_features?.system_register_guide_url}"
+													href="{$config?.extended_features?.system_register_guide_url}"
 													>Vejledning til at anmode om adgang i Systemregisteret på Serviceportalen.</a
 												>
 											</div>
