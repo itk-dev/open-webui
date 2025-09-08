@@ -264,6 +264,18 @@ type Config = {
 		enable_direct_connections: boolean;
 		enable_version_update_check: boolean;
 	};
+
+	// Environment variables for patches
+	extended_features: {
+		// PATCH EXTRA LOGIN INFO
+		system_register_url: string;
+		system_register_guide_url: string;
+		// /PATCH EXTRA LOGIN INFO
+		// PATCH ADD LOGO TO SIDEBAR
+		logo_url: string;
+		// /PATCH ADD LOGO TO SIDEBAR
+	};
+
 	oauth: {
 		providers: {
 			[key: string]: string;
