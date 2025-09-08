@@ -1044,6 +1044,22 @@ ENABLE_SIGNUP = PersistentConfig(
 )
 
 
+# PATCH EXTRA LOGIN INFO
+SYSTEM_REGISTER_URL = PersistentConfig(
+    "SYSTEM_REGISTER_URL",
+    "ui.SYSTEM_REGISTER_URL",
+    os.environ.get("SYSTEM_REGISTER_URL", ""),
+)
+
+
+SYSTEM_REGISTER_GUIDE_URL = PersistentConfig(
+    "SYSTEM_REGISTER_GUIDE_URL",
+    "ui.SYSTEM_REGISTER_GUIDE_URL",
+    os.environ.get("SYSTEM_REGISTER_GUIDE_URL", ""),
+)
+# /PATCH EXTRA LOGIN INFO
+
+
 # PATCH ADD LOGO TO SIDEBAR
 LOGO_URL = PersistentConfig(
     "LOGO_URL",
