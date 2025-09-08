@@ -1060,6 +1060,15 @@ SYSTEM_REGISTER_GUIDE_URL = PersistentConfig(
 # /PATCH EXTRA LOGIN INFO
 
 
+# PATCH ADD LOGO TO SIDEBAR
+LOGO_URL = PersistentConfig(
+    "LOGO_URL",
+    "ui.LOGO_URL",
+    os.environ.get("LOGO_URL", ""),
+)
+# /PATCH ADD LOGO TO SIDEBAR
+
+
 ENABLE_LOGIN_FORM = PersistentConfig(
     "ENABLE_LOGIN_FORM",
     "ui.ENABLE_LOGIN_FORM",
