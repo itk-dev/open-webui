@@ -99,6 +99,9 @@ def _build_meter_provider(resource: Resource) -> MeterProvider:
         View(
             instrument_name="webui.users.active",
         ),
+        View(
+            instrument_name="webui.chats.total",
+        ),
     ]
 
     provider = MeterProvider(
@@ -145,6 +148,24 @@ def setup_metrics(app: FastAPI, resource: Resource) -> None:
             )
         ]
 
+    def observe_total_chats(
+            options: metrics.CallbackOptions,
+    ) -> Sequence[metrics.Observation]:
+        from open_webui.models.chats import Chats  # Import here to avoid circular imports
+
+        try:
+            # Query the database for total chat count
+            total_chats = Chats.get_chat_count()  # You'd need to implement this method
+            return [
+                metrics.Observation(
+                    value=total_chats,
+                )
+            ]
+        except Exception as e:
+            from pprint import pprint
+            pprint(e)
+            return [metrics.Observation(value=0)]
+
     meter.create_observable_gauge(
         name="webui.users.total",
         description="Total number of registered users",
@@ -157,6 +178,13 @@ def setup_metrics(app: FastAPI, resource: Resource) -> None:
         description="Number of currently active users",
         unit="users",
         callbacks=[observe_active_users],
+    )
+
+    meter.create_observable_gauge(
+        name="webui.chats.total",
+        description="Total number of chat conversations",
+        unit="chats",
+        callbacks=[observe_total_chats],
     )
 
     # FastAPI middleware
