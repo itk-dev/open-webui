@@ -1033,5 +1033,9 @@ class ChatTable:
         except Exception:
             return False
 
+    def get_chat_count(self) -> int:
+        """Get total number of chats."""
+        with get_db() as db:
+            return db.query(Chat).count()
 
 Chats = ChatTable()
