@@ -1035,13 +1035,7 @@ async def update_ldap_config(
 
 # create api key
 @router.post("/api_key", response_model=ApiKey)
-async def generate_api_key(request: Request, user=Depends(get_current_user)):
-    if not request.app.state.config.ENABLE_API_KEY:
-        raise HTTPException(
-            status.HTTP_403_FORBIDDEN,
-            detail=ERROR_MESSAGES.API_KEY_CREATION_NOT_ALLOWED,
-        )
-
+async def generate_api_key(request: Request, user=Depends(get_admin_user)):
     api_key = create_api_key()
     success = Users.update_user_api_key_by_id(user.id, api_key)
 
@@ -1055,14 +1049,14 @@ async def generate_api_key(request: Request, user=Depends(get_current_user)):
 
 # delete api key
 @router.delete("/api_key", response_model=bool)
-async def delete_api_key(user=Depends(get_current_user)):
+async def delete_api_key(user=Depends(get_admin_user)):
     success = Users.update_user_api_key_by_id(user.id, None)
     return success
 
 
 # get api key
 @router.get("/api_key", response_model=ApiKey)
-async def get_api_key(user=Depends(get_current_user)):
+async def get_api_key(user=Depends(get_admin_user)):
     api_key = Users.get_user_api_key_by_id(user.id)
     if api_key:
         return {
