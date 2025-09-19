@@ -225,7 +225,10 @@ def get_current_user(
 
     # auth by api key
     if token.startswith("sk-"):
-        if not request.state.enable_api_key:
+        # Load user to check for the admin role below
+        user = get_current_user_by_api_key(token)
+
+        if user.role != "admin" and not request.state.enable_api_key:
             raise HTTPException(
                 status.HTTP_403_FORBIDDEN, detail=ERROR_MESSAGES.API_KEY_NOT_ALLOWED
             )
@@ -247,8 +250,6 @@ def get_current_user(
                 raise HTTPException(
                     status.HTTP_403_FORBIDDEN, detail=ERROR_MESSAGES.API_KEY_NOT_ALLOWED
                 )
-
-        user = get_current_user_by_api_key(token)
 
         # Add user info to current span
         current_span = trace.get_current_span()
