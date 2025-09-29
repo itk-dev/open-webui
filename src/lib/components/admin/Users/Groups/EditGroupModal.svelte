@@ -51,6 +51,8 @@
 			controls: true,
 			valves: true,
 			system_prompt: true,
+			image_capture: true,
+            attach_knowledge: true,
 			params: true,
 			file_upload: true,
 			delete: true,
